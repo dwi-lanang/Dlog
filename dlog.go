@@ -9,20 +9,21 @@ import (
 )
 
 type ParamBody struct {
-	State   string      `json:"state"`
-	Data    interface{} `json:"data"`
-	Options interface{} `json:"options"`
-	At      string
+	State  string      `json:"state"`
+	Data   interface{} `json:"data"`
+	Config Config      `json:"config"`
+	At     string      `json:"at"`
 }
-type Socket struct {
+type IO struct {
 	*goWS.Socket
-	Options
+	Config
 }
-type Options struct {
-	Mode, Src string
+type Config struct {
+	Mode    string `json:"mode"`
+	Channel string `json:"channel"`
 }
 
-func Dlog(url, options Options, callback func(string)) (socket Socket) {
+func Init(url string, config Config, callback func(string)) (socket IO) {
 	s := goWS.New(fmt.Sprint("wss://", url))
 
 	s.OnConnectError = func(err error, socket goWS.Socket) {
@@ -52,20 +53,20 @@ func Dlog(url, options Options, callback func(string)) (socket Socket) {
 	}
 
 	s.Connect()
-	return Socket{
+	return IO{
 		&s,
-		options,
+		config,
 	}
 }
 
-func (socket Socket) Send(state string, data interface{}) {
+func (socket IO) Send(state string, data interface{}) {
 	currentTime := time.Now()
 	currentDate := currentTime.Format("2006-01-02-15-04-05")
 	b := ParamBody{
-		State:   state,
-		Data:    data,
-		Options: socket.Options,
-		At:      currentDate,
+		State:  state,
+		Data:   data,
+		Config: socket.Config,
+		At:     currentDate,
 	}
 	body, err := json.Marshal(b)
 	if err != nil {
