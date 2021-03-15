@@ -4,9 +4,9 @@ Initial
 
 ```go
 var (
-    urlServer = ""
-    mode = ""
-    channel = ""
+    urlServer = "" 
+    mode = "" //debug or monitor
+    channel = "" //api
 )
 dl := dlog.Init(urlServer, dlog.Config{
     Mode:    mode,
