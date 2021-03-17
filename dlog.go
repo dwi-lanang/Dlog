@@ -3,6 +3,7 @@ package dllog
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	goWS "github.com/sacOO7/gowebsocket"
@@ -23,7 +24,13 @@ type Config struct {
 	Channel string `json:"channel"`
 }
 
+func recovery() {
+	if err := recover(); err != nil {
+		log.Println(err)
+	}
+}
 func Init(url string, config Config, callback func(string)) (socket IO) {
+	defer recovery()
 	s := goWS.New(fmt.Sprint("wss://", url))
 
 	s.OnConnectError = func(err error, socket goWS.Socket) {
@@ -60,6 +67,7 @@ func Init(url string, config Config, callback func(string)) (socket IO) {
 }
 
 func (socket IO) Send(state string, data interface{}) {
+	defer recovery()
 	currentTime := time.Now()
 	currentDate := currentTime.Format("2006-01-02-15-04-05")
 	b := ParamBody{
