@@ -20,8 +20,8 @@ type IO struct {
 	Config
 }
 type Config struct {
-	Mode    string `json:"mode"`
-	Channel string `json:"channel"`
+	Environment string `json:"environment"`
+	Channel     string `json:"channel"`
 }
 
 func recovery() {
