@@ -1,4 +1,4 @@
-module github.com/dwi-lanang/Dlog
+module github.com/dwilanang/Dlog
 
 go 1.13
 
